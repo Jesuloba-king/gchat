@@ -40,5 +40,7 @@ GChat is a real-time chat application built with Flutter and Firebase. It suppor
 
 ```bash
 git clone https://github.com/your-username/gchat.git
+git checkout developmet : view mobile apps features
+
 cd gchat
 
