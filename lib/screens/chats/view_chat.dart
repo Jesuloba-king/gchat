@@ -157,6 +157,7 @@ class _ViewChatPageState extends State<ViewChatPage> {
           crossAxisAlignment:
               isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
+            //chat bubble
             ChatBubble(
               message: data['message'],
               isCurrentUser: isCurrentUser,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
 import 'chats/chats.dart';
-import 'person_pg.dart';
+import 'profile/person_pg.dart';
 
 class BottomBarPage extends StatefulWidget {
   const BottomBarPage({super.key});

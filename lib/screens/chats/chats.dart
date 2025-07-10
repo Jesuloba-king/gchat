@@ -3,6 +3,7 @@ import 'package:gchat/widgets/buttons.dart';
 
 import '../../utils/auth_service.dart';
 import '../../utils/chat_service.dart';
+import '../../widgets/my_drawer.dart';
 import 'view_chat.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -21,7 +22,7 @@ class _ChatsPageState extends State<ChatsPage> {
     return Scaffold(
       backgroundColor: Color(0xffF6F6F6),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 2,
         shadowColor: Colors.white,
@@ -34,6 +35,7 @@ class _ChatsPageState extends State<ChatsPage> {
         ),
         // foregroundColor: Colors.black,
       ),
+      drawer: MyDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

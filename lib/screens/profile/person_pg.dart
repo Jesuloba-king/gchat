@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:gchat/utils/auth_service.dart';
 import 'package:gchat/utils/colors.dart';
 
-import '../splash/splash_screen.dart';
-import '../utils/chat_service.dart';
-import '../widgets/buttons.dart';
+import '../../splash/splash_screen.dart';
+import '../../utils/chat_service.dart';
+import '../../widgets/buttons.dart';
+import 'blocked_user.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -87,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Container(
                   padding: EdgeInsets.all(25),
                   margin:
-                      const EdgeInsets.symmetric(horizontal: 5, vertical: 25),
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 12),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -98,6 +99,43 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
 
                 //settings
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return BlockedUserPage();
+                    }));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(15),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 25),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(width: 1, color: Colors.white),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Blocked Users',
+                          // style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+
+                        //button
+                        IconButton(
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return BlockedUserPage();
+                              }));
+                            },
+                            icon: Icon(Icons.arrow_forward_ios_sharp))
+                      ],
+                    ),
+                  ),
+                ),
 
                 //logout button
                 TextButton(

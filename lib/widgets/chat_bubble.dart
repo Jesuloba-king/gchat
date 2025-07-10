@@ -72,6 +72,8 @@ class ChatBubble extends StatelessWidget {
                   onPressed: () {
                     ChatService().reportUser(messageId, userId);
                     Navigator.pop(context);
+                    Navigator.pop(context);
+
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text("Message Reported")));
                   },
