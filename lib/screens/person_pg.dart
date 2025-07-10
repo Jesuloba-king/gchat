@@ -58,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
             final users = snapshot.data!;
             final currentUser = _authService.getCurrentUser();
 
-            // Find the current user from the user list
+            // get the current user from the user list
             final currentUserData = users.firstWhere(
               (user) => user['email'] == currentUser?.email,
               orElse: () => {},
