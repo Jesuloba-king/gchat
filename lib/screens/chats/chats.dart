@@ -49,7 +49,7 @@ class _ChatsPageState extends State<ChatsPage> {
   //list of users
   Widget _userLiist() {
     return StreamBuilder(
-        stream: _chatService.getUsersStream(),
+        stream: _chatService.getUsersStreamExcludingBlocked(),
         builder: (context, snapshot) {
           //error
           if (snapshot.hasError) {

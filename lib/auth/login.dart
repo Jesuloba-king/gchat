@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gchat/auth/signup.dart';
 
 import '../screens/bottom_bar.dart';
-import '../splash/splash_screen.dart';
 import '../utils/auth_service.dart';
 import '../utils/colors.dart';
 import '../utils/validators.dart';
+import '../widgets/app_loader.dart';
 import '../widgets/buttons.dart';
 import '../widgets/textfield.dart';
 
@@ -22,30 +22,46 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
 
   bool _isPasswordVisible = false;
+  bool _isLoading = false; // <-- Added
 
   Future<void> login(context) async {
     final authService = AuthService();
+    setState(() {
+      _isLoading = true;
+    });
 
-    //try login
     try {
       await authService.signInWithEmailPassword(
-          emailController.text, passwordController.text);
+          emailController.text, passwordController.text, context);
 
-      //navidate tto homepage
+      setState(() {
+        _isLoading = false;
+      });
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => BottomBarPage()),
       );
-    }
-    //catch
-    catch (e) {
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
       showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(e.toString()),
-            );
-          });
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Login Failed"),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -144,47 +160,39 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            isDone
-                ? AppButton(
-                    text: "LOGIN",
-                    textColor: Colors.white,
-                    ontap: () => login(context),
-                    // () {
-                    //   if (_formKey.currentState!.validate()) {
-                    //     Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //           builder: (context) => BottomBarPage()),
-                    //     );
-                    //   }
-                    // },
+            _isLoading
+                ? Center(
+                    child: AppLoader(color: AppColors.appThemeColor),
                   )
-                :
-                // button inactive until all conditions are met
-                AppButton(
-                    text: "LOGIN",
-                    textColor: Colors.white,
-                    borderColor: const Color.fromARGB(255, 142, 162, 200),
-                    buttonColor: const Color.fromARGB(255, 142, 162, 200),
-                    ontap: () {},
-                  ),
-            SizedBox(
-              height: 16,
-            ),
+                : isDone
+                    ? AppButton(
+                        text: "LOGIN",
+                        textColor: Colors.white,
+                        ontap: () => login(context),
+                      )
+                    : AppButton(
+                        text: "LOGIN",
+                        textColor: Colors.white,
+                        borderColor: const Color.fromARGB(255, 142, 162, 200),
+                        buttonColor: const Color.fromARGB(255, 142, 162, 200),
+                        ontap: () {},
+                      ),
+            const SizedBox(height: 16),
             InkWell(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => SignUpPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => SignUpPage()),
                 );
               },
               child: RichText(
                 text: TextSpan(
-                  text: "Dont't have an account ",
+                  text: "Don't have an account ",
                   style: TextStyle(
-                      color: Colors.black, fontFamily: "Roboto", fontSize: 16),
+                    color: Colors.black,
+                    fontFamily: "Roboto",
+                    fontSize: 16,
+                  ),
                   children: [
                     TextSpan(
                       text: 'Signup',

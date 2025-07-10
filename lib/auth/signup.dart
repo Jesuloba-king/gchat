@@ -5,6 +5,7 @@ import '../screens/bottom_bar.dart';
 import '../utils/auth_service.dart';
 import '../utils/colors.dart';
 import '../utils/validators.dart';
+import '../widgets/app_loader.dart';
 import '../widgets/buttons.dart';
 import '../widgets/textfield.dart';
 import 'login.dart';
@@ -23,42 +24,52 @@ class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
 
+  bool _isLoading = false;
+
   void register(context) async {
     final authService = AuthService();
 
-    //check if password matches
-    // if(passwordController.text == confamPasswordController){}
+    setState(() {
+      _isLoading = true;
+    });
 
-    //try login
     try {
-      await authService.signUpWithEmailPassword(emailController.text,
-          passwordController.text, nameController.text, context);
+      await authService.signUpWithEmailPassword(
+        emailController.text,
+        passwordController.text,
+        nameController.text,
+        context,
+      );
 
-      //navidate tto homepage
+      setState(() {
+        _isLoading = false;
+      });
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => BottomBarPage()),
       );
-    }
-    //catch
-    catch (e) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text(e.toString()),
-            );
-          });
-    }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
 
-    //passowrd donts match
-    // showDialog(
-    //       context: context,
-    //       builder: (context) {
-    //         return AlertDialog(
-    //           title: Text("Passwords don't match"),
-    //         );
-    //       });
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Registration Failed"),
+            content: Text(e.toString()),
+            actions: [
+              TextButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -168,30 +179,27 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            isDone
-                ? AppButton(
-                    text: "REGISTER",
-                    textColor: Colors.white,
-                    ontap: () {
-                      if (_formKey.currentState!.validate()) {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => BottomBarPage()),
-                        // );
-                        register(context);
-                      }
-                    },
+            _isLoading
+                ? Center(
+                    child: AppLoader(color: AppColors.appThemeColor),
                   )
-                :
-                // button inactive until all conditions are met
-                AppButton(
-                    text: "REGISTER",
-                    textColor: Colors.white,
-                    borderColor: const Color.fromARGB(255, 142, 162, 200),
-                    buttonColor: const Color.fromARGB(255, 142, 162, 200),
-                    ontap: () {},
-                  ),
+                : isDone
+                    ? AppButton(
+                        text: "REGISTER",
+                        textColor: Colors.white,
+                        ontap: () {
+                          if (_formKey.currentState!.validate()) {
+                            register(context);
+                          }
+                        },
+                      )
+                    : AppButton(
+                        text: "REGISTER",
+                        textColor: Colors.white,
+                        borderColor: const Color.fromARGB(255, 142, 162, 200),
+                        buttonColor: const Color.fromARGB(255, 142, 162, 200),
+                        ontap: () {},
+                      ),
             SizedBox(
               height: 16,
             ),

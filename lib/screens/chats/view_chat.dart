@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:gchat/screens/chats/chats.dart';
 import 'package:gchat/utils/auth_service.dart';
 import 'package:gchat/utils/chat_service.dart';
 import 'package:gchat/widgets/chat_bubble.dart';
 import 'package:gchat/widgets/textfield.dart';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../../widgets/buttons.dart';
 
@@ -31,15 +32,27 @@ class _ViewChatPageState extends State<ViewChatPage> {
 
   FocusNode myFocusNode = FocusNode();
 
+  bool isOnline = true;
+
   @override
   void initState() {
     super.initState();
-
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
-        //delay for keyboard to show and to scroll down
         Future.delayed(Duration(milliseconds: 500), () => scrollDown());
       }
+    });
+
+    Future.delayed(Duration(milliseconds: 500), () => scrollDown());
+
+    // Listen to connection changes
+    Connectivity().onConnectivityChanged.listen((results) {
+      bool connected = results.contains(ConnectivityResult.mobile) ||
+          results.contains(ConnectivityResult.wifi);
+
+      setState(() {
+        isOnline = connected;
+      });
     });
   }
 
@@ -59,14 +72,16 @@ class _ViewChatPageState extends State<ViewChatPage> {
 
   //send message
   Future<void> sendMessage() async {
-    if (messageController.text.isNotEmpty) {
-      //send message
+    if (messageController.text.isNotEmpty && isOnline) {
       await _chatService.sendMessage(
-          widget.receiverID, messageController.text, widget.myuser);
-
-      //clear textfield
+        widget.receiverID,
+        messageController.text,
+        widget.myuser,
+      );
       messageController.clear();
     }
+
+    scrollDown();
   }
 
   @override
@@ -142,7 +157,12 @@ class _ViewChatPageState extends State<ViewChatPage> {
           crossAxisAlignment:
               isCurrentUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            ChatBubble(message: data['message'], isCurrentUser: isCurrentUser)
+            ChatBubble(
+              message: data['message'],
+              isCurrentUser: isCurrentUser,
+              messageId: doc.id,
+              userId: data['senderID'],
+            )
           ],
         ));
   }
@@ -153,7 +173,10 @@ class _ViewChatPageState extends State<ViewChatPage> {
       children: [
         Expanded(
             child: ChatTextField(
-                controller: messageController, labelText: 'Type a message..')),
+          controller: messageController,
+          focusNode: myFocusNode,
+          labelText: isOnline ? 'Type a message..' : 'No internet connection',
+        )),
 
         //send button
         Container(
@@ -161,11 +184,11 @@ class _ViewChatPageState extends State<ViewChatPage> {
               BoxDecoration(color: Color(0xffF2F2F2), shape: BoxShape.circle),
           margin: EdgeInsets.only(left: 20),
           child: IconButton(
-              onPressed: sendMessage,
+              onPressed: isOnline ? sendMessage : null,
               // color: Colors.grey,
               icon: Icon(
                 Icons.send,
-                color: Color(0xffDEA531),
+                color: isOnline ? Color(0xffDEA531) : Colors.grey,
               )),
         )
       ],

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gchat/utils/auth_service.dart';
 import 'package:gchat/utils/colors.dart';
 
+import '../splash/splash_screen.dart';
 import '../utils/chat_service.dart';
 import '../widgets/buttons.dart';
 
@@ -19,8 +20,21 @@ class _ProfilePageState extends State<ProfilePage> {
   final ChatService _chatService = ChatService();
 
   // Logout function
-  void logout() async {
+  void logout(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
     await _authService.signOut();
+
+    // Remove all previous routes and navigate to SplashScreen
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
+      return WelcomeScreen();
+    }));
   }
 
   @override
@@ -82,8 +96,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   child: _userListTile(currentUserData, context),
                 ),
+
+                //settings
+
+                //logout button
                 TextButton(
-                  onPressed: logout,
+                  onPressed: () => logout(context),
                   child: GChatText(
                     text: "Logout",
                     fontColor: AppColors.appThemeColor,

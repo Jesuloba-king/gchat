@@ -1,16 +1,44 @@
-# gchat
+# GChat - Flutter Firebase Chat App
 
-A new Flutter project.
+GChat is a real-time chat application built with Flutter and Firebase. It supports user authentication, sending and receiving messages, offline message viewing, and environment-based configurations.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+- Firebase Authentication
+- Firestore real-time messaging
+- Offline message history
+- Chat UI with message bubbles
+- Environment-based configuration (dev, staging, production)
+- Input disabled when offline
+- Loading states for login and sign-up
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📦 Technologies Used
+
+- [Flutter](https://flutter.dev)
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
+- [Cloud Firestore](https://firebase.google.com/docs/firestore)
+- [connectivity_plus](https://pub.dev/packages/connectivity_plus)
+
+
+## Firebase Console configured with my account, Firebase Database for both android and iOS
+
+## Flutter Web
+- flutter build web
+- firebase init hosting
+- firebase deploy
+
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. 📁 Clone the repository
+
+```bash
+git clone https://github.com/your-username/gchat.git
+cd gchat
+

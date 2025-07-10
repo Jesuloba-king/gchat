@@ -13,7 +13,8 @@ class AuthService {
   }
 
   //sign in
-  Future<UserCredential> signInWithEmailPassword(String email, password) async {
+  Future<UserCredential> signInWithEmailPassword(
+      String email, password, context) async {
     try {
       //sign users
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -28,6 +29,12 @@ class AuthService {
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text(e.toString()),
+      //     backgroundColor: Colors.red,
+      //   ),
+      // );
       throw Exception(e.code);
     }
   }
@@ -50,9 +57,9 @@ class AuthService {
       //
       return userCredential;
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+      // );
       throw Exception(e.code);
 
       //
